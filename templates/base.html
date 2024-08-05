@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    >
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="">
+            <svg width="160px" height="160px" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <circle cx="53.5" cy="53.5" r="31.5" stroke="#0000ff" stroke-width="12"></circle>
+                    <circle cx="53.5" cy="138.5" r="31.5" stroke="#0000ff" stroke-width="12"></circle>
+                    <circle cx="138.5" cy="138.5" r="31.5" stroke="#0000ff" stroke-width="12"></circle>
+                    <path stroke="#0000ff" stroke-linecap="round" stroke-width="12"
+                          d="m113 28 25.5 25.5M164 79l-25.5-25.5m0 0L164 28m-25.5 25.5L113 79"></path>
+                </g>
+            </svg>
+            <h2 class="px-1">Main Page</h2>
+        </a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+           data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="https://github.com/Nikitaksk/django-games-collection">
+                View Source Code
+            </a>
+            {#            <a class="navbar-item">#}
+            {#                Report an issue#}
+            {#            </a>#}
+
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    {% if user.is_authenticated %}
+                        <a class="button is-link">
+                            {{ user.username }}
+                        </a>
+                        <a class="button is-link is-outlined" href="/users/logout">
+                            Log out
+                        </a>
+                    {% else %}
+                        <a class="button is-link is-outlined" href="/users/login">
+                            Log in
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% block content %}
+{% endblock %}
+</body>
+<script src="https://kit.fontawesome.com/3daef64643.js" crossorigin="anonymous"></script>
+</html>

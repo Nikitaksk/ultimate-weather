@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+
+{% block content %}
+    <div class="container columns is-flex is-fullheight is-vcentered" style="height:90vh;">
+        <div class="container my-5 is-max-widescreen p-5">
+            <div class="columns is-vcentered box">
+                <div class="column is-half  is-flex is-vcentered">
+                    <div class="container has-text-centered is-size-2-mobile is-size-1 is-family-sans-serif  ">
+                        <h1 class="has-text-weight-bold"> Welcome back </h1>
+                        <h1 class="has-text-weight-bold has-text-link"> to the games zone </h1>
+                    </div>
+
+                </div>
+                <div class="column  is-half">
+                    <form method="post" class="register-form" id="register-form" action="">
+                        {% csrf_token %}
+                        <h1 class="has-text-weight-bold has-text-centered is-size-2 is-family-sans-serif">
+                            Log in </h1>
+                        <div class="field">
+                            {#                            {{ form.username.errors }}#}
+                            <label class="label">{{ form.username.label }}</label>
+                            <div class="control has-icons-left has-icons-right">
+                                {{ form.username }}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                            </div>
+                            <p class="help ">{{ form.username.help_text|safe }}</p>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">{{ form.password.label }}</label>
+                            <p class="control has-icons-left">
+                                {#                                <input class="input" name="password" type="password" placeholder="Password">#}
+                                {{ form.password }}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                            </p>
+                            <p class="help">{{ form.password.help_text|safe }}</p>
+                        </div>
+                        <div class="field">
+                            <div class="control is-grouped p-1">
+                                <button class="button is-link my-1" type="submit">Log In</button>
+                                <a class="button is-link is-outlined my-1" href="{% url 'register' %}" >I don't have an
+                                    account!</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% include url %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block content %}
+    <div class="container columns is-flex is-fullheight is-vcentered" style="height:90vh;">
+    {% for error in form.non_field_errors %}
+        <div class="notification is-link"
+             style="position: absolute; top: 10%; left:25%; width: 50%; z-index: 5;">
+            <button class="delete"></button>
+            {{ error }}
+        </div>
+    {% endfor %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="notification is-link"
+                 style="position: absolute; top: 10%; left:25%; width: 50%; z-index: 5;">
+                <button class="delete"></button>
+                {{ error }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <div class="container columns is-flex is-fullheight is-vcentered" style="height:90vh;">
+        <div class="container my-5 is-max-widescreen p-5">
+            <div class="columns is-vcentered box">
+                <div class="column is-half  is-flex is-vcentered">
+                    <div class="container has-text-centered is-size-2-mobile is-size-1 is-family-sans-serif  ">
+                        <h1 class="has-text-weight-bold"> Welcome to the world </h1>
+                        <h1 class="has-text-weight-bold has-text-link"> of your favorite games </h1>
+                    </div>
+
+                </div>
+                <div class="column  is-half">
+                    <form method="post" class="register-form" id="register-form" action="">
+                        {% csrf_token %}
+                        <h1 class="has-text-weight-bold has-text-centered is-size-2 is-family-sans-serif">
+                            Register </h1>
+                        <div class="field">
+
+                            <label class="label">{{ form.username.label }}</label>
+                            <div class="control has-icons-left has-icons-right">
+                                {{ form.username }}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                            </div>
+                            <p class="help ">{{ form.username.help_text|safe }}</p>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">{{ form.password1.label }}</label>
+                            <p class="control has-icons-left">
+                                {{ form.password1 }}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                            </p>
+                            <p class="help">{{ form.password1.help_text|safe }}</p>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">{{ form.password2.label }}</label>
+                            <p class="control has-icons-left">
+                                {{ form.password2 }}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                            </p>
+                            <p class="help ">{{ form.password2.help_text|safe }}</p>
+                        </div>
+
+                        <div class="field ">
+                            <label class="label">{{ form.country.label }}</label>
+                            <div class="select is-fullwidth" id="country_select">
+                                {{ form.country }}
+                            </div>
+                            <p class="help ">{{ form.country.help_text|safe }}</p>
+                        </div>
+
+{#                        <div class="field ">#}
+{#                            <label class="label">{{ form.city.label }}</label>#}
+{#                            <div class="select is-fullwidth" id="country_select">#}
+{#                                {{ form.city }}#}
+{#                            </div>#}
+{#                            <p class="help ">{{ form.country.help_text|safe }}</p>#}
+{#                        </div>#}
+
+                        <div class="field ">
+                            <label class="label">City</label>
+                            <div class="select is-fullwidth" id="country_select">
+                                {{ form.city }}
+                                <select id = "cities" required name = "city">
+        <option> --- </option>
+                                </select>
+                            </div>
+                            <p class="help ">{{ form.country.help_text|safe }}</p>
+                        </div>
+
+                        <div class="field">
+                            <div class="control is-grouped p-1">
+                                <button class="button is-link my-1" type="submit">Register</button>
+                                <a class="button is-link is-outlined my-1" href="{% url 'login' %}">I have an
+                                    account!</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        function fetch_cities() {
+            var request = $.ajax({
+                url: "{% url 'cities' %}",
+                type: "POST",
+                data: {
+                    country: $('#id_country').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    let cities;
+                    for (let i = 0; i < data.length; i++) {
+                        {#console.log(data[i]);#}
+                        cities += "<option value=" + data[i] + ">" + data[i] + "</option>"
+                    }
+                    $('#cities').html(cities)
+                }
+            });
+            request.fail(function (jqXHR, textStatus) {
+                alert("Request failed: " + textStatus);
+            });
+
+
+        }
+    </script>
+{% endblock %}

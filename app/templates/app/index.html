@@ -4,14 +4,171 @@
     Main Page
 {% endblock %}
 
-{% block content %}
-    {% if user.is_authenticated %}
-        {{ user.username }}
-        {{ city }}
+{% block head %}
 
-    {% else %}
-        <a class="button is-link is-outlined" href="/users/login">
-            Log in
-        </a>
-    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <section class="hero ">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">Weather in {{ city }}</h1>
+                <h2 class="subtitle">Stay updated with the latest weather info</h2>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column">
+                    <div class="box">
+                        <h3 class="title is-4">Today's Weather</h3>
+                        <p class="subtitle is-6">{{ time }}</p>
+                        <div class="columns is-multiline is-mobile">
+                            <div class="column is-one-third has-text-centered">
+                            <span class="icon is-large">
+                              <i class="fas fa-thermometer-half fa-2x"></i>
+                            </span>
+                                <p>Temperature: {{ temperature }}°C</p>
+                            </div>
+                            <div class="column is-one-third has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-tint fa-2x"></i>
+                </span>
+                                <p>Humidity: {{ humidity }}%</p>
+                            </div>
+                            <div class="column is-one-third has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-temperature-low fa-2x"></i>
+                </span>
+                                <p>Apparent Temperature:{{ apparent_temperature }}°C</p>
+                            </div>
+                            <div class="column is-one-third has-text-centered">
+                            <span class="icon is-large">
+                              <i class="fas fa-cloud-showers-heavy fa-2x"></i>
+                            </span>
+                                <p>Precipitation: {{ precipitation }} mm</p>
+                            </div>
+                            <div class="column is-one-third has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-cloud-rain fa-2x"></i>
+                </span>
+                                <p>Rain: {{ rain }} mm</p>
+                            </div>
+
+                            <div class="column is-one-third has-text-centered">
+                            <span class="icon is-large">
+                              <i class="fas {{ weather_code_icon }} fa-2x"></i>
+                            </span>
+                                <p>Weather Code: {{ weather_code_desc }}</p>
+                            </div>
+
+                            <div class="column is-one-third has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-cloud fa-2x"></i>
+                </span>
+                                <p>Cloud Cover: {{ cloud_cover }}%</p>
+                            </div>
+                            <div class="column is-one-third has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-wind fa-2x"></i>
+                </span>
+                                <p>Wind Speed: {{ wind_speed }} km/h</p>
+                            </div>
+                            <div class="column is-one-third has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-tachometer-alt fa-2x"></i>
+                </span>
+                                <p>Surface Pressure: {{ surface_pressure }} hPa</p>
+                            </div>
+                        </div>
+
+                        <!-- Hourly Weather Block -->
+                        <h3 class="title is-4 mt-5">Hourly Weather (Next 12 Hours)</h3>
+                        <div class="columns is-multiline is-mobile">
+                            <!-- Example Hourly Weather Blocks -->
+                            <div class="column is-1 has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-sun fa-2x"></i> <!-- Example icon -->
+                </span>
+                                <p>[Temp]°C</p>
+                                <p>[Hour]</p>
+                            </div>
+                            <div class="column is-1 has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-cloud-sun fa-2x"></i> <!-- Example icon -->
+                </span>
+                                <p>[Temp]°C</p>
+                                <p>[Hour]</p>
+                            </div>
+                            <!-- Repeat for the next 10 hours -->
+                            <div class="column is-1 has-text-centered">
+                <span class="icon is-large">
+                  <i class="fas fa-cloud fa-2x"></i> <!-- Example icon -->
+                </span>
+                                <p>[Temp]°C</p>
+                                <p>[Hour]</p>
+                            </div>
+                            <!-- Add more hourly blocks as needed -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forecast for Next Days Block -->
+            <div class="columns">
+                <div class="column">
+                    <div class="box">
+                        <h3 class="title is-4">Forecast for Next Days</h3>
+                        <div class="columns is-multiline">
+                            <!-- Day 1 Forecast -->
+                            <div class="column is-one-third">
+                                <div class="box">
+                                    <h4 class="title is-5">[Day 1]</h4>
+                                    <p>Temperature: [Temp]°C</p>
+                                    <p>Condition: [Condition]</p>
+                                    <p>Wind: [Wind Speed] km/h</p>
+                                </div>
+                            </div>
+                            <!-- Day 2 Forecast -->
+                            <div class="column is-one-third">
+                                <div class="box">
+                                    <h4 class="title is-5">[Day 2]</h4>
+                                    <p>Temperature: [Temp]°C</p>
+                                    <p>Condition: [Condition]</p>
+                                    <p>Wind: [Wind Speed] km/h</p>
+                                </div>
+                            </div>
+                            <!-- Day 3 Forecast -->
+                            <div class="column is-one-third">
+                                <div class="box">
+                                    <h4 class="title is-5">[Day 3]</h4>
+                                    <p>Temperature: [Temp]°C</p>
+                                    <p>Condition: [Condition]</p>
+                                    <p>Wind: [Wind Speed] km/h</p>
+                                </div>
+                            </div>
+                            <!-- Add more days as needed -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moon Info Block -->
+            <div class="columns">
+                <div class="column">
+                    <div class="box">
+                        <h3 class="title is-4">Moon Information</h3>
+                        <div class="content">
+                            <p>Moonrise: [Moonrise Time]</p>
+                            <p>Moonset: [Moonset Time]</p>
+                            <p>Phase: [Moon Phase]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 {% endblock %}

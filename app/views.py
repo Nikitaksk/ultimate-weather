@@ -1,17 +1,7 @@
 from django.shortcuts import render
-import requests
-import openmeteo_requests
-from retry_requests import retry
-import requests_cache
 from .weather import *
 
 from users.models import City, UserProfile
-
-
-# cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
-# retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
-# openmeteo = openmeteo_requests.Client(session=retry_session)
-#
 
 def index(request):
     if request.user.is_authenticated:
@@ -33,6 +23,9 @@ def index(request):
 
     hourly_data = hourly_weather(weather_data)
     context.update(hourly_data)
+
+    daily_data = daily_weather(weather_data)
+    context.update(daily_data)
 
     print(context)
 

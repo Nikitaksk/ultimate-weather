@@ -1,66 +1,6 @@
 import requests
 from datetime import datetime
 
-
-def get_weather(lat, lon):
-    endpoint = "https://api.open-meteo.com/v1/forecast"
-    parameters = {
-        "latitude": lat,
-        "longitude": lon,
-        # "hourly": "temperature_2m,precipitation",
-        # "daily": ["weather_code", "temperature_2m_max", "temperature_2m_min"],
-        "current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "precipitation", "rain",
-                    "weather_code", "cloud_cover", "surface_pressure", "wind_speed_10m"],
-        # "past_days": 3,
-        "timezone": "auto",
-    }
-    try:
-        response = requests.get(endpoint, params=parameters)
-        response.raise_for_status()
-        response_data = response.json()
-        print("RESPONSE:", response_data)
-        return response_data
-    except requests.RequestException as e:
-        print(f"Error fetching hourly weather data: {e}")
-        return None
-    except ValueError as e:
-        print(f"Error processing hourly weather data: {e}")
-        return None
-
-
-def convert_hourly_to_datetime(time_string: str) -> datetime:
-    try:
-        date = datetime.strptime(time_string, '%Y-%m-%dT%H:%M:%S')
-    except ValueError:
-        date = datetime.strptime(time_string, '%Y-%m-%dT%H:%M')
-    return date
-
-
-def hourly_weather(weather_data):
-    print("Hourly Weather Data:")
-    if 'hourly' in weather_data:
-        times = weather_data['hourly']['time']
-        temperatures = weather_data['hourly']['temperature_2m']
-        precipitations = weather_data['hourly']['precipitation']
-        for time, temp, precip in zip(times, temperatures, precipitations):
-            print(f"Time: {convert_hourly_to_datetime(time)}, Temperature: {temp}°C, Precipitation: {precip}mm")
-    else:
-        print("  No hourly data available.")
-
-
-def daily_weather(weather_data):
-    print("Daily Weather Data:")
-    if 'daily' in weather_data:
-        # print(data['daily'])
-        days = weather_data['daily']['time']
-        minimums = weather_data['daily']['temperature_2m_min']
-        maximums = weather_data['daily']['temperature_2m_max']
-        for day, min_of_the_day, max_of_the_day in zip(days, minimums, maximums):
-            print(f"Day: {day}, Min: {min_of_the_day}, Max: {max_of_the_day}")
-    else:
-        print("  No hourly data available.")
-
-
 weather_codes = {
     0: {'description': 'Clear sky', 'icon': 'fa-sun'},
     1: {'description': 'Mainly clear', 'icon': 'fa-cloud-sun'},
@@ -92,6 +32,83 @@ weather_codes = {
     99: {'description': 'Thunderstorm with heavy hail', 'icon': 'fa-bolt'}
 }
 
+def get_weather(lat, lon):
+    endpoint = "https://api.open-meteo.com/v1/forecast"
+    parameters = {
+        "latitude": lat,
+        "longitude": lon,
+        # "hourly": "temperature_2m,precipitation",
+        "hourly": ["temperature_2m", "precipitation_probability", "weather_code"],
+        "current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "precipitation", "rain",
+                    "weather_code", "cloud_cover", "surface_pressure", "wind_speed_10m"],
+        # "past_days": 3,
+        "timezone": "auto",
+    }
+    try:
+        response = requests.get(endpoint, params=parameters)
+        response.raise_for_status()
+        response_data = response.json()
+        # print("RESPONSE:", response_data)
+        return response_data
+    except requests.RequestException as e:
+        print(f"Error fetching hourly weather data: {e}")
+        return None
+    except ValueError as e:
+        print(f"Error processing hourly weather data: {e}")
+        return None
+
+
+def convert_hourly_to_datetime_bulk(hourly_data):
+    arr = []
+    for hour in hourly_data:
+        arr.append(convert_hourly_to_datetime(hour).strftime("%H"))
+
+    return arr
+
+def convert_hourly_to_datetime(time_string: str) -> datetime:
+    try:
+        date = datetime.strptime(time_string, '%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        date = datetime.strptime(time_string, '%Y-%m-%dT%H:%M')
+    return date
+
+
+def hourly_weather(weather_data):
+
+    amount_of_hours = 24
+    if 'hourly' in weather_data:
+        times = convert_hourly_to_datetime_bulk(weather_data['hourly']['time'][:amount_of_hours])
+        temperatures = weather_data['hourly']['temperature_2m'][:amount_of_hours]
+        precipitations = weather_data['hourly']['precipitation_probability'][:amount_of_hours]
+        weather_codes_info = weather_data['hourly']['weather_code'][:amount_of_hours]
+
+        weather_codes_desc = [weather_codes[i]['description'] for i in weather_codes_info]
+        weather_codes_icon = [weather_codes[i]['icon'] for i in weather_codes_info]
+
+
+        return {
+            "hourly_data" : zip(times, temperatures, precipitations, weather_codes_desc, weather_codes_icon),
+        }
+
+    else:
+        print("  No hourly data available.")
+
+
+def daily_weather(weather_data):
+    # print("Daily Weather Data:")
+    if 'daily' in weather_data:
+        # print(data['daily'])
+        days = weather_data['daily']['time']
+        minimums = weather_data['daily']['temperature_2m_min']
+        maximums = weather_data['daily']['temperature_2m_max']
+        for day, min_of_the_day, max_of_the_day in zip(days, minimums, maximums):
+            print(f"Day: {day}, Min: {min_of_the_day}, Max: {max_of_the_day}")
+    else:
+        print("  No hourly data available.")
+
+
+
+
 
 def current_weather(weather_data):
     if 'current' in weather_data:
@@ -110,25 +127,19 @@ def current_weather(weather_data):
         wind_speed = weather_data['current']['wind_speed_10m']
 
         return {
-            "time": time,
-            "temperature": temperature,
-            "humidity": humidity,
-            'apparent_temperature': apparent_temperature,
-            "precipitation": precipitation,
-            "rain": rain,
-            "weather_code": weather_code,
-            "cloud_cover": cloud_cover,
-            "surface_pressure": surface_pressure,
-            'wind_speed': wind_speed,
-            'weather_code_desc': weather_code_desc,
-            'weather_code_icon': weather_code_icon,
+            "current_time": time,
+            "current_temperature": temperature,
+            "current_humidity": humidity,
+            'current_apparent_temperature': apparent_temperature,
+            "current_precipitation": precipitation,
+            "current_rain": rain,
+            "current_weather_code": weather_code,
+            "current_cloud_cover": cloud_cover,
+            "current_surface_pressure": surface_pressure,
+            'current_wind_speed': wind_speed,
+            'current_weather_code_desc': weather_code_desc,
+            'current_weather_code_icon': weather_code_icon,
         }
     else:
         print("No current data available.")
 
-# if __name__ == "__main__":
-#     # get_weather(54.352050, 18.646370)
-#     data = get_weather(54.352050, 18.646370)
-#     # hourly_weather(data)
-#     # daily_weather(data)
-#     current_weather(data)

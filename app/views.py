@@ -21,7 +21,6 @@ def index(request):
 
     latitude = city.latitude
     longitude = city.longitude
-
     context = {
         'city': city,
         'latitude': latitude,
@@ -31,6 +30,9 @@ def index(request):
     weather_data = get_weather(latitude, longitude)
     current_data = current_weather(weather_data)
     context.update(current_data)
+
+    hourly_data = hourly_weather(weather_data)
+    context.update(hourly_data)
 
     print(context)
 

@@ -1,15 +1,17 @@
-{% extends "base.html" %}
-
-{% block title %}
-    Main Page
-{% endblock %}
-
-{% block head %}
-
-{% endblock %}
-
-{% block content %}
-    <section class="hero ">
+{% extends "base.html" %} {% block title %} Main Page {% endblock %} {% block head %}
+    <style>
+        .box:last-child {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+    {# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />#}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"/>
+{% endblock %} {% block content %}
+    <section class="hero">
         <div class="hero-body">
             <div class="container">
                 <h1 class="title">Weather in {{ city }}</h1>
@@ -17,158 +19,147 @@
             </div>
         </div>
     </section>
-
     <section class="section">
         <div class="container">
-            <div class="columns">
-                <div class="column">
-                    <div class="box">
-                        <h3 class="title is-4">Today's Weather</h3>
-                        <p class="subtitle is-6">{{ time }}</p>
-                        <div class="columns is-multiline is-mobile">
-                            <div class="column is-one-third has-text-centered">
-                            <span class="icon is-large">
-                              <i class="fas fa-thermometer-half fa-2x"></i>
-                            </span>
-                                <p>Temperature: {{ temperature }}°C</p>
-                            </div>
-                            <div class="column is-one-third has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-tint fa-2x"></i>
-                </span>
-                                <p>Humidity: {{ humidity }}%</p>
-                            </div>
-                            <div class="column is-one-third has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-temperature-low fa-2x"></i>
-                </span>
-                                <p>Apparent Temperature:{{ apparent_temperature }}°C</p>
-                            </div>
-                            <div class="column is-one-third has-text-centered">
-                            <span class="icon is-large">
-                              <i class="fas fa-cloud-showers-heavy fa-2x"></i>
-                            </span>
-                                <p>Precipitation: {{ precipitation }} mm</p>
-                            </div>
-                            <div class="column is-one-third has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-cloud-rain fa-2x"></i>
-                </span>
-                                <p>Rain: {{ rain }} mm</p>
-                            </div>
-
-                            <div class="column is-one-third has-text-centered">
-                            <span class="icon is-large">
-                              <i class="fas {{ weather_code_icon }} fa-2x"></i>
-                            </span>
-                                <p>Weather Code: {{ weather_code_desc }}</p>
-                            </div>
-
-                            <div class="column is-one-third has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-cloud fa-2x"></i>
-                </span>
-                                <p>Cloud Cover: {{ cloud_cover }}%</p>
-                            </div>
-                            <div class="column is-one-third has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-wind fa-2x"></i>
-                </span>
-                                <p>Wind Speed: {{ wind_speed }} km/h</p>
-                            </div>
-                            <div class="column is-one-third has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-tachometer-alt fa-2x"></i>
-                </span>
-                                <p>Surface Pressure: {{ surface_pressure }} hPa</p>
-                            </div>
+            <div class="box" style="">
+                <h3 class="title is-4">Today's Weather</h3>
+                <p class="subtitle is-6">{{ current_time }}</p>
+                <div class="grid is-col-min-7">
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center is-col-span-2 is-row-span-2">
+                        <div class="has-text-centered">
+                        <span class="icon is-large my-5">
+                            <i class="fas {{ current_weather_code_icon }} fa-7x"></i>
+                        </span>
+                            <p class="title is-3 my-5">{{ current_weather_code_desc }}</p>
                         </div>
-
-                        <!-- Hourly Weather Block -->
-                        <h3 class="title is-4 mt-5">Hourly Weather (Next 12 Hours)</h3>
-                        <div class="columns is-multiline is-mobile">
-                            <!-- Example Hourly Weather Blocks -->
-                            <div class="column is-1 has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-sun fa-2x"></i> <!-- Example icon -->
-                </span>
-                                <p>[Temp]°C</p>
-                                <p>[Hour]</p>
-                            </div>
-                            <div class="column is-1 has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-cloud-sun fa-2x"></i> <!-- Example icon -->
-                </span>
-                                <p>[Temp]°C</p>
-                                <p>[Hour]</p>
-                            </div>
-                            <!-- Repeat for the next 10 hours -->
-                            <div class="column is-1 has-text-centered">
-                <span class="icon is-large">
-                  <i class="fas fa-cloud fa-2x"></i> <!-- Example icon -->
-                </span>
-                                <p>[Temp]°C</p>
-                                <p>[Hour]</p>
-                            </div>
-                            <!-- Add more hourly blocks as needed -->
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Temperature</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-thermometer-half fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_temperature }}°C</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Humidity</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-tint fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_humidity }}%</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Feels as</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-temperature-low fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_apparent_temperature }}°C</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Precipitation</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-cloud-showers-heavy fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_precipitation }} mm</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Rain</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-cloud-rain fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_rain }} mm</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Cloud Cover</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-cloud fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_cloud_cover }}%</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Wind Speed</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-wind fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_wind_speed }} km/h</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Pressure</p>
+                            <span class="icon is-large my-1">
+                            <i class="fas fa-tachometer-alt fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ current_surface_pressure }} hPa</p>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Forecast for Next Days Block -->
-            <div class="columns">
-                <div class="column">
-                    <div class="box">
-                        <h3 class="title is-4">Forecast for Next Days</h3>
-                        <div class="columns is-multiline">
-                            <!-- Day 1 Forecast -->
-                            <div class="column is-one-third">
-                                <div class="box">
-                                    <h4 class="title is-5">[Day 1]</h4>
-                                    <p>Temperature: [Temp]°C</p>
-                                    <p>Condition: [Condition]</p>
-                                    <p>Wind: [Wind Speed] km/h</p>
+                <div class="box" style="">
+                    <h3 class="title is-4">Weather by hours</h3>
+                    <div class="owl-carousel owl-theme">
+                        {% for time, temp, precipitation, weather_code_desc, weather_code_icon in hourly_data %}
+                            {#                    <p class="">{{ time }} {{ temp }} {{ precipitation }} {{ weather_code_desc }} {{ weather_code_icon }}</p>#}
+                            <div class="cell item box is-flex is-align-items-center is-justify-content-center">
+                                <div class="has-text-centered">
+                                    <p class="is-size-6 my-1">at {{ time }}:00</p>
+                                    <span class="icon is-large my-1">
+                                <i class="fas {{ weather_code_icon }} fa-3x"></i>
+                            </span>
+                                    <p class="my-1">{{ temp }}°C</p>
+                                    {#                            <p>{{ weather_code_desc }}</p>#}
                                 </div>
                             </div>
-                            <!-- Day 2 Forecast -->
-                            <div class="column is-one-third">
-                                <div class="box">
-                                    <h4 class="title is-5">[Day 2]</h4>
-                                    <p>Temperature: [Temp]°C</p>
-                                    <p>Condition: [Condition]</p>
-                                    <p>Wind: [Wind Speed] km/h</p>
-                                </div>
-                            </div>
-                            <!-- Day 3 Forecast -->
-                            <div class="column is-one-third">
-                                <div class="box">
-                                    <h4 class="title is-5">[Day 3]</h4>
-                                    <p>Temperature: [Temp]°C</p>
-                                    <p>Condition: [Condition]</p>
-                                    <p>Wind: [Wind Speed] km/h</p>
-                                </div>
-                            </div>
-                            <!-- Add more days as needed -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Moon Info Block -->
-            <div class="columns">
-                <div class="column">
-                    <div class="box">
-                        <h3 class="title is-4">Moon Information</h3>
-                        <div class="content">
-                            <p>Moonrise: [Moonrise Time]</p>
-                            <p>Moonset: [Moonset Time]</p>
-                            <p>Phase: [Moon Phase]</p>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+{% endblock %} {% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+        var owl = $('.owl-carousel');
+        $(document).ready(function () {
+            $(".owl-carousel").owlCarousel({
+                loop: true,
+                margin: 10,
+                autoplay: true,
+                autoplayTimeout: 1000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 3,
+                    },
+                    600: {
+                        items: 4,
+                    },
+                    1000: {
+                        items: 6,
+                    },
+                },
+            });
+        });
+        owl.on('mousewheel', '.owl-stage', function (e) {
+            if (e.deltaY > 0) {
+                owl.trigger('next.owl');
+            } else {
+                owl.trigger('prev.owl');
+            }
+            e.preventDefault();
+        });
+    </script>
 {% endblock %}

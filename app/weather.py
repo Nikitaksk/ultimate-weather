@@ -40,11 +40,11 @@ def get_weather(lat, lon):
     parameters = {
         "latitude": lat,
         "longitude": lon,
-        "hourly": ["temperature_2m", "precipitation_probability", "weather_code"],
+        "hourly": ["temperature_2m", "precipitation_probability", "weather_code", "surface_pressure", "cloud_cover"],
         "current": ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "precipitation", "rain",
                     "weather_code", "cloud_cover", "surface_pressure", "wind_speed_10m"],
         "daily": ["weather_code", "temperature_2m_max", "temperature_2m_min", "sunrise", "sunset", "precipitation_sum",
-                  "precipitation_hours", "precipitation_probability_max"],
+                  "precipitation_hours", "precipitation_probability_max","daylight_duration", "uv_index_max"],
         "timezone": "auto",
         "past_days": past_days,
     }
@@ -67,6 +67,7 @@ def convert_hourly_to_datetime_bulk(hourly_data):
         arr.append(convert_hourly_to_datetime(hour).strftime("%H"))
     return arr
 
+
 def convert_daily_to_datetime_bulk(daily_data):
     arr = []
     for day in daily_data:
@@ -82,6 +83,55 @@ def convert_hourly_to_datetime(time_string: str) -> datetime:
     return date
 
 
+def avg(lst: list[float]) -> float:
+    return sum(lst) / len(lst)
+
+
+def fishing_parameters(weather_data):
+    amount_of_hours = 24
+    timestamp_start = past_days * 24
+    timestamp_end = timestamp_start + amount_of_hours
+    pressure_delta = abs(avg(weather_data['hourly']['surface_pressure'][timestamp_start: timestamp_end]) - avg(
+        weather_data['hourly']['surface_pressure'][timestamp_start - 24: timestamp_end - 24]))
+    pressure_weight = -0.1
+    pressure_stability = "Very stable"
+    if 2 <= pressure_delta < 5:
+        pressure_stability = "Stable"
+    elif 5 <= pressure_delta < 10:
+        pressure_stability = "Unstable"
+    elif pressure_delta >= 10:
+        pressure_stability = "Extremely unstable"
+
+    temperature_delta = abs(avg(weather_data['hourly']['temperature_2m'][timestamp_start: timestamp_end]) - avg(
+        weather_data['hourly']['temperature_2m'][timestamp_start - 24: timestamp_end - 24]))
+    temperature_weight = -0.1
+    temperature_stability = "Very stable"
+    if 2 <= temperature_delta < 5:
+        temperature_stability = "Stable"
+    elif 5 <= temperature_delta < 10:
+        temperature_stability = "Unstable"
+    elif temperature_delta >= 10:
+        temperature_stability = "Extremely unstable"
+
+    avg_cloud_coverage = avg(weather_data['hourly']['cloud_cover'][timestamp_start: timestamp_end])
+    cloud_coverage_value = abs(50 - avg_cloud_coverage)
+    cloud_weight = -0.01
+
+    cloud_weighted = cloud_weight * cloud_coverage_value
+    temperature_weighted = temperature_weight * temperature_delta
+    pressure_weighted = pressure_weight * pressure_delta
+
+    fish_activity = 1 + cloud_weighted + temperature_weighted + pressure_weighted
+    # print(round(fish_activity * 100, 2))
+    return {
+        "pressure_delta": pressure_delta,
+        "pressure_stability": pressure_stability,
+        "temperature_delta": temperature_delta,
+        "temperature_stability": temperature_stability,
+        "fish_activity": round(fish_activity * 100, 2),
+    }
+
+
 def hourly_weather(weather_data):
     amount_of_hours = 24
     if 'hourly' in weather_data:
@@ -93,8 +143,11 @@ def hourly_weather(weather_data):
         weather_codes_info = weather_data['hourly']['weather_code'][timestamp_start: timestamp_end]
         weather_codes_desc = [weather_codes[i]['description'] for i in weather_codes_info]
         weather_codes_icon = [weather_codes[i]['icon'] for i in weather_codes_info]
+
         return {
             "hourly_data": zip(timestamps, temperatures, precipitations, weather_codes_desc, weather_codes_icon),
+            # "pressure_delta": pressure_delta,
+            # "pressure_data" : weather_data['hourly']['surface_pressure'],
         }
     else:
         return None
@@ -120,11 +173,13 @@ def daily_weather(weather_data):
             sunrise.append(datetime.strptime(weather_data['daily']['sunrise'][i], "%Y-%m-%dT%H:%M").strftime("%H:%M"))
             sunset.append(datetime.strptime(weather_data['daily']['sunset'][i], "%Y-%m-%dT%H:%M").strftime("%H:%M"))
 
-
         precipitation_sum = weather_data['daily']['precipitation_sum']
         precipitation_probability = weather_data['daily']['precipitation_probability_max']
         return {
-            "daily_data" : zip(timestamps[past_days:], weather_codes_icon[past_days:], weather_codes_desc[past_days:], min_of_the_day[past_days:], max_of_the_day[past_days:], sunrise[past_days:], sunset[past_days:], precipitation_sum[past_days:], precipitation_hours[past_days:], precipitation_probability[past_days:])
+            "daily_data": zip(timestamps[past_days:], weather_codes_icon[past_days:], weather_codes_desc[past_days:],
+                              min_of_the_day[past_days:], max_of_the_day[past_days:], sunrise[past_days:],
+                              sunset[past_days:], precipitation_sum[past_days:], precipitation_hours[past_days:],
+                              precipitation_probability[past_days:])
         }
     else:
         return None
@@ -138,6 +193,7 @@ def current_weather(weather_data):
         humidity = weather_data['current']['relative_humidity_2m']
         apparent_temperature = weather_data['current']['apparent_temperature']
         precipitation = weather_data['current']['precipitation']
+        precipitation_sum = weather_data['daily']['precipitation_sum'][past_days]
         rain = weather_data['current']['rain']
         weather_code = weather_data['current']['weather_code']
         weather_code_desc = weather_codes[weather_code]['description']
@@ -146,12 +202,19 @@ def current_weather(weather_data):
         surface_pressure = weather_data['current']['surface_pressure']
         wind_speed = weather_data['current']['wind_speed_10m']
 
+        sunrise = datetime.strptime(weather_data['daily']['sunrise'][past_days], "%Y-%m-%dT%H:%M").strftime("%H:%M")
+        sunset = datetime.strptime(weather_data['daily']['sunset'][past_days], "%Y-%m-%dT%H:%M").strftime("%H:%M")
+
+        # "daylight_duration", "uv_index_max"
+        daylight_duration = weather_data['daily']['daylight_duration'][past_days]
+        uv_index = weather_data['daily']['uv_index_max'][past_days]
+
         return {
             "current_time": time,
             "current_temperature": temperature,
             "current_humidity": humidity,
             'current_apparent_temperature': apparent_temperature,
-            "current_precipitation": precipitation,
+            "current_precipitation": precipitation_sum,
             "current_rain": rain,
             "current_weather_code": weather_code,
             "current_cloud_cover": cloud_cover,
@@ -159,6 +222,10 @@ def current_weather(weather_data):
             'current_wind_speed': wind_speed,
             'current_weather_code_desc': weather_code_desc,
             'current_weather_code_icon': weather_code_icon,
+            'uv_index': uv_index,
+            'daylight_duration': round(daylight_duration/3600,1),
+            'sunrise': sunrise,
+            'sunset': sunset,
         }
     else:
         print("No current data available.")

@@ -9,7 +9,6 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"/>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"/>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 {% endblock %} {% block content %}
     <section class="hero">
         <div class="hero-body">
@@ -72,15 +71,6 @@
                     </div>
                     <div class="cell box is-flex is-align-items-center is-justify-content-center">
                         <div class="has-text-centered">
-                            <p class="is-size-5 my-1">Rain</p>
-                            <span class="icon has-text-info is-large my-1">
-                            <i class="fas fa-cloud-rain fa-3x"></i>
-                        </span>
-                            <p class="my-1">{{ current_rain }} mm</p>
-                        </div>
-                    </div>
-                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
-                        <div class="has-text-centered">
                             <p class="is-size-5 my-1">Cloud Cover</p>
                             <span class="icon has-text-light is-large my-1">
                             <i class="fas fa-cloud fa-3x"></i>
@@ -106,8 +96,53 @@
                             <p class="my-1">{{ current_surface_pressure }} hPa</p>
                         </div>
                     </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Fish activity</p>
+                            <span class="icon has-text-link is-large my-1">
+                            <i class="fa-solid fa-fish-fins fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ fish_activity }}%</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">UV index</p>
+                            <span class="icon  is-large my-1">
+                            <i class="fa-solid fa-glasses fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ uv_index }}</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Sun time</p>
+                            <span class="icon has-text-info is-large my-1">
+                            <i class="fa-solid fa-solar-panel fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ daylight_duration }}h</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Sunrise</p>
+                            <span class="icon has-text-link is-large my-1">
+                            <i class="fa-solid fa-sun-plant-wilt fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ sunrise }}</p>
+                        </div>
+                    </div>
+                    <div class="cell box is-flex is-align-items-center is-justify-content-center">
+                        <div class="has-text-centered">
+                            <p class="is-size-5 my-1">Sunset</p>
+                            <span class="icon has-text-warning is-large my-1">
+                            <i class="fa-solid fa-moon fa-3x"></i>
+                        </span>
+                            <p class="my-1">{{ sunset }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="box" style="">
+                <div class="box" id>
                     <h3 class="title is-4">Hourly</h3>
                     <div class="owl-carousel owl-theme">
                         {% for time, temp, precipitation, weather_code_desc, weather_code_icon in hourly_data %}
@@ -118,15 +153,16 @@
                                     <span class="icon is-large my-1">
                                 <i class="fas {{ weather_code_icon }} fa-3x"></i>
                             </span>
-                                    <p class="my-1">{{ temp }}°C</p>
-                                    <p>{{ precipitation }}%</p>
+                                    <p class="my-1"><i class="fa-solid fa-temperature-three-quarters"></i> {{ temp }}°C
+                                    </p>
+                                    <p><i class="fa-solid fa-droplet"></i> {{ precipitation }}%</p>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
-            <div class="box">
+            <div class="box" id="forecast">
                 <h3 class="title is-4">7-Day Weather Forecast</h3>
                 <div class="grid">
                     {% for timestamp, weather_codes_icon, weather_codes_desc, min_of_the_day, max_of_the_day, sunrise, sunset, precipitation_sum, precipitation_hours, precipitation_probability in daily_data %}
@@ -136,15 +172,27 @@
                                 <span class="icon has-text-primary is-large my-3">
                                 <i class="fas {{ weather_codes_icon }} fa-3x"></i>
                             </span>
-                                <p class="my-1 is-size-6"><i class="fa-solid fa-moon"></i> {{ min_of_the_day }}°C - <i class="fa-solid fa-sun"></i> {{ max_of_the_day }}°C </p>
-                                <p class="my-1 is-size-6"><i class="fa-solid fa-cloud-showers-water"></i> {{ precipitation_probability }}% ({{ precipitation_sum }}mm)</p>
-                                <p class="my-1 is-size-6"> <i class="fa-solid fa-arrow-trend-up"></i> {{ sunrise }} <i class="fa-solid fa-arrow-trend-down"></i> {{ sunset }}</p>
+                                <p class="my-1 is-size-6"><i class="fa-solid fa-moon"></i> {{ min_of_the_day }}°C - <i
+                                        class="fa-solid fa-sun"></i> {{ max_of_the_day }}°C </p>
+                                <p class="my-1 is-size-6"><i
+                                        class="fa-solid fa-cloud-showers-water"></i> {{ precipitation_probability }}%
+                                    ({{ precipitation_sum }}mm)</p>
+                                <p class="my-1 is-size-6"><i class="fa-solid fa-arrow-trend-up"></i> {{ sunrise }} <i
+                                        class="fa-solid fa-arrow-trend-down"></i> {{ sunset }}</p>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
 
             </div>
+            <div class="box" id="map">
+                <h3 class="title is-4">Real time map</h3>
+                <iframe width="100%" frameborder="0" style="border:0;height:50vh;"
+                        src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=m/s&zoom=9&overlay=radar&product=radar&level=surface&lat=54.327&lon=18.669&message=true"
+                        frameborder="0"></iframe>
+
+            </div>
+
         </div>
     </section>
 
@@ -162,13 +210,13 @@
                 autoplayHoverPause: true,
                 responsive: {
                     0: {
-                        items: 3,
+                        items: 2,
                     },
                     600: {
-                        items: 4,
+                        items: 5,
                     },
                     1000: {
-                        items: 6,
+                        items: 7,
                     },
                 },
             });

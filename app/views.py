@@ -27,6 +27,9 @@ def index(request):
     daily_data = daily_weather(weather_data)
     context.update(daily_data)
 
+    fishing_data = fishing_parameters(weather_data)
+    context.update(fishing_data)
+
     print(context)
 
     return render(request, "app/index.html", context=context)

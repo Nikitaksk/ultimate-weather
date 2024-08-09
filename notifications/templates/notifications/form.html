@@ -1,0 +1,47 @@
+<form method="post" action="{% url 'report' %}">
+                                {% csrf_token %}
+                                <div class="field">
+                                    <label class="label">{{ form.name.label}}</label>
+                                    <div class="control has-icons-left">
+                                        {{ form.name }}
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">{{ form.email.label}}</label>
+                                    <div class="control has-icons-left">
+                                        {{ form.email }}
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">Issue Type</label>
+                                    <div class="control has-icons-left">
+                                        <div class="select is-fullwidth">
+                                            {{ form.issue_type }}
+                                        </div>
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-list"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label">{{ form.issue_desc.label }}</label>
+                                    <div class="control">
+                                        {{ form.issue_desc }}
+                                    </div>
+                                </div>
+                                <button class="button is-link mt-4" type="submit" style="width: 100%">
+                                <span class="icon">
+                                 <i class="fa-solid fa-paper-plane"></i>
+                                </span>
+                                <span>Submit</span>
+                            </button>
+                            </form>

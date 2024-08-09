@@ -8,8 +8,8 @@ weather_codes = {
     3: {'description': 'Overcast', 'icon': 'fa-cloud-meatball has-text-dark'},
     45: {'description': 'Fog and depositing rime fog', 'icon': 'fa-smog has-text-dark'},
     48: {'description': 'Fog and depositing rime fog', 'icon': 'fa-smog has-text-dark'},
-    51: {'description': 'Drizzle: Light', 'icon': 'fa-cloud-drizzle has-text-link'},
-    53: {'description': 'Drizzle: Moderate', 'icon': 'fa-cloud-drizzle has-text-link'},
+    51: {'description': 'Drizzle: Light', 'icon': 'fa-cloud-rain has-text-link'},
+    53: {'description': 'Drizzle: Moderate', 'icon': 'fa-cloud-rain has-text-link'},
     55: {'description': 'Drizzle: Dense intensity', 'icon': 'fa-cloud-showers-heavy has-text-info'},
     56: {'description': 'Freezing Drizzle: Light', 'icon': 'fa-cloud-showers-heavy has-text-info'},
     57: {'description': 'Freezing Drizzle: Dense intensity', 'icon': 'fa-cloud-showers-heavy has-text-info'},
@@ -155,6 +155,7 @@ def hourly_weather(weather_data):
 
 def daily_weather(weather_data):
     if 'daily' in weather_data:
+        past_days_daily = past_days + 1
         timestamps = convert_daily_to_datetime_bulk(weather_data['daily']['time'])
         weather_codes_info = weather_data['daily']['weather_code']
         weather_codes_desc = []
@@ -164,7 +165,7 @@ def daily_weather(weather_data):
         precipitation_hours = []
         sunrise = []
         sunset = []
-        for i in range(len(timestamps)):
+        for i in range( len(timestamps)):
             weather_codes_desc.append(weather_codes[weather_codes_info[i]]['description'])
             weather_codes_icon.append(weather_codes[weather_codes_info[i]]['icon'])
             min_of_the_day.append(int(weather_data['daily']['temperature_2m_min'][i]))
@@ -176,10 +177,10 @@ def daily_weather(weather_data):
         precipitation_sum = weather_data['daily']['precipitation_sum']
         precipitation_probability = weather_data['daily']['precipitation_probability_max']
         return {
-            "daily_data": zip(timestamps[past_days:], weather_codes_icon[past_days:], weather_codes_desc[past_days:],
-                              min_of_the_day[past_days:], max_of_the_day[past_days:], sunrise[past_days:],
-                              sunset[past_days:], precipitation_sum[past_days:], precipitation_hours[past_days:],
-                              precipitation_probability[past_days:])
+            "daily_data": zip(timestamps[past_days_daily:], weather_codes_icon[past_days_daily:], weather_codes_desc[past_days_daily:],
+                              min_of_the_day[past_days_daily:], max_of_the_day[past_days_daily:], sunrise[past_days_daily:],
+                              sunset[past_days_daily:], precipitation_sum[past_days_daily:], precipitation_hours[past_days_daily:],
+                              precipitation_probability[past_days_daily:])
         }
     else:
         return None

@@ -7,7 +7,7 @@ def index(request):
     if request.user.is_authenticated:
         city = City.objects.get(id=UserProfile.objects.get(user=request.user).city.id)
     else:
-        city = City.objects.get(city="Gdańsk")
+        city = City.objects.get(name="Gdańsk")
 
     latitude = city.latitude
     longitude = city.longitude

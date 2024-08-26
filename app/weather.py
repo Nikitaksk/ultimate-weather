@@ -48,13 +48,20 @@ def get_weather(lat, lon):
         "timezone": "auto",
         "past_days": past_days,
     }
+
     try:
-        response = requests.get(endpoint, params=parameters)
+        proxies = {
+           'http' : 'http://77.105.136.28:1995',
+        }
+
+
+        response = requests.get(endpoint, params=parameters, proxies=proxies)
         response.raise_for_status()
         response_data = response.json()
         return response_data
     except requests.RequestException as e:
         print(f"Error fetching hourly weather data: {e}")
+
         return None
     except ValueError as e:
         print(f"Error processing hourly weather data: {e}")

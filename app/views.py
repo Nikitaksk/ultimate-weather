@@ -25,7 +25,6 @@ def index(request, searched_city=None):
 
     weather_data = get_weather(latitude, longitude)
     if weather_data:
-
         current_data = current_weather(weather_data)
         context.update(current_data)
 
@@ -42,7 +41,7 @@ def index(request, searched_city=None):
 
         return render(request, "app/index.html", context=context)
     else:
-        return "Weather data not found"
+        return weather_data
 
 
 def weather_in(request):

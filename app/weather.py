@@ -36,6 +36,7 @@ past_days = 2
 
 
 def get_weather(lat, lon):
+    global response
     endpoint = "https://api.open-meteo.com/v1/forecast"
     parameters = {
         "latitude": lat,
@@ -50,22 +51,16 @@ def get_weather(lat, lon):
     }
 
     try:
-        proxies = {
-           'http' : 'http://77.105.136.28:1995',
-        }
-
-
-        response = requests.get(endpoint, params=parameters, proxies=proxies)
+        response = requests.get(endpoint, params=parameters)
         response.raise_for_status()
         response_data = response.json()
         return response_data
     except requests.RequestException as e:
         print(f"Error fetching hourly weather data: {e}")
-
-        return None
+        return response
     except ValueError as e:
         print(f"Error processing hourly weather data: {e}")
-        return None
+        return response
 
 
 def convert_hourly_to_datetime_bulk(hourly_data):

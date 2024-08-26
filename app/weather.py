@@ -115,14 +115,14 @@ def fishing_parameters(weather_data):
 
     avg_cloud_coverage = avg(weather_data['hourly']['cloud_cover'][timestamp_start: timestamp_end])
     cloud_coverage_value = abs(50 - avg_cloud_coverage)
-    cloud_weight = -0.01
+    cloud_weight = -0.001
 
     cloud_weighted = cloud_weight * cloud_coverage_value
     temperature_weighted = temperature_weight * temperature_delta
     pressure_weighted = pressure_weight * pressure_delta
 
-    fish_activity = 1 + cloud_weighted + temperature_weighted + pressure_weighted
-    # print(round(fish_activity * 100, 2))
+    fish_activity = abs(1 + cloud_weighted + temperature_weighted + pressure_weighted)
+
     return {
         "pressure_delta": pressure_delta,
         "pressure_stability": pressure_stability,
@@ -229,4 +229,7 @@ def current_weather(weather_data):
             'sunset': sunset,
         }
     else:
-        print("No current data available.")
+        return {
+            "current_time": None,
+        }
+

@@ -48,3 +48,4 @@ def weather_in(request):
     else:
         print("GET!!!!!!")
         return redirect('index')
+

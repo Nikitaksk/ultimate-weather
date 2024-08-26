@@ -24,21 +24,25 @@ def index(request, searched_city=None):
     }
 
     weather_data = get_weather(latitude, longitude)
-    current_data = current_weather(weather_data)
-    context.update(current_data)
+    if weather_data:
 
-    hourly_data = hourly_weather(weather_data)
-    context.update(hourly_data)
+        current_data = current_weather(weather_data)
+        context.update(current_data)
 
-    daily_data = daily_weather(weather_data)
-    context.update(daily_data)
+        hourly_data = hourly_weather(weather_data)
+        context.update(hourly_data)
 
-    fishing_data = fishing_parameters(weather_data)
-    context.update(fishing_data)
+        daily_data = daily_weather(weather_data)
+        context.update(daily_data)
 
-    print(context)
+        fishing_data = fishing_parameters(weather_data)
+        context.update(fishing_data)
 
-    return render(request, "app/index.html", context=context)
+        print(context)
+
+        return render(request, "app/index.html", context=context)
+    else:
+        return "Weather data not found"
 
 
 def weather_in(request):
@@ -46,6 +50,5 @@ def weather_in(request):
         city = request.POST['city']
         return index(request, city)
     else:
-        print("GET!!!!!!")
         return redirect('index')
 

@@ -188,6 +188,7 @@ def daily_weather(weather_data):
 
 
 def current_weather(weather_data):
+
     if 'current' in weather_data:
         time = convert_hourly_to_datetime(weather_data['current']['time'])
         temperature = weather_data['current']['temperature_2m']

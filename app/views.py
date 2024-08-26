@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .weather import *
@@ -42,7 +44,7 @@ def index(request, searched_city=None):
 
         return render(request, "app/index.html", context=context)
     else:
-        return HttpResponse("Error occurred" + weather_data.json())
+        return HttpResponse("Error occurred" + json.dumps(weather_data))
 
 
 def weather_in(request):

@@ -42,7 +42,7 @@ def index(request, searched_city=None):
 
         return render(request, "app/index.html", context=context)
     else:
-        return HttpResponse("Error occured" + weather_data)
+        return HttpResponse("Error occurred" + weather_data.json())
 
 
 def weather_in(request):
